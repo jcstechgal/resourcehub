@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EdTech Resource Directory</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-indigo-700 text-white py-8 px-4 shadow-md">
+    <div class="max-w-6xl mx-auto text-center">
+      <h1 class="text-3xl md:text-4xl font-bold">EdTech Resource Directory</h1>
+      <p class="mt-2 text-indigo-100">Search by platform name, category, or teaching objective.</p>
+    </div>
+  </header>
+
+  <!-- Search & Filter Controls -->
+  <main class="max-w-6xl mx-auto p-4 md:p-6">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+      
+      <!-- Text Search Bar -->
+      <div>
+        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Search Keywords</label>
+        <input type="text" id="searchInput" placeholder="e.g., Kahoot, Math, Video, Reading..." 
+               class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+
+      <!-- Category Dropdown -->
+      <div>
+        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Filter Category</label>
+        <select id="categoryFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <option value="">All Categories</option>
+        </select>
+      </div>
+
+      <!-- Objective Dropdown -->
+      <div>
+        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Teaching Objective</label>
+        <select id="objectiveFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <option value="">All Objectives</option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- Active Results Counter -->
+    <div class="mb-4 text-sm text-slate-500 font-medium" id="resultsCount"></div>
+
+    <!-- Cards Grid -->
+    <div id="cardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </main>
+
+  <!-- Video Modal -->
+  <div id="videoModal" class="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-xl overflow-hidden max-w-3xl w-full shadow-2xl relative">
+      <div class="flex justify-between items-center p-4 border-b border-slate-200">
+        <h3 id="modalTitle" class="font-bold text-lg text-slate-800">Video Overview</h3>
+        <button onclick="closeModal()" class="text-slate-500 hover:text-slate-800 font-bold text-xl leading-none">&times;</button>
+      </div>
+      <div class="aspect-video w-full bg-black">
+        <iframe id="modalIframe" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Master Platform Dataset (47 Platforms)
+    const platforms = [
+      {
+        name: "Adobe Express",
+        category: "Creativity & Media",
+        objectives: ["Visual Projects", "Infographics", "Video Editing"],
+        description: "All-in-one visual design platform for creating graphics, web pages, and video content.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://express.adobe.com"
+      },
+      {
+        name: "AimsWeb",
+        category: "Assessment & Data",
+        objectives: ["Benchmark Testing", "RTI/MTSS Tracking", "Progress Monitoring"],
+        description: "Tiered screening and progress monitoring system for reading and math skills.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.aimswebplus.com"
+      },
+      {
+        name: "Benchmark Universe",
+        category: "Literacy & Content",
+        objectives: ["Core ELA", "Guided Reading", "Digital Decodables"],
+        description: "Digital portal for Benchmark Education core reading curriculum and resources.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.benchmarkuniverse.com"
+      },
+      {
+        name: "Blooket (Free)",
+        category: "Formative & Gamification",
+        objectives: ["Gamified Review", "Vocabulary Practice", "Exit Tickets"],
+        description: "Action-based learning games and quizzes that increase student engagement.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://blooket.com"
+      },
+      {
+        name: "Boom Cards (Free)",
+        category: "Formative & Gamification",
+        objectives: ["Task Cards", "Self-Grading Practice", "Independent Centers"],
+        description: "Self-grading digital task cards for interactive skill practice and differentiation.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://wow.boomlearning.com"
+      },
+      {
+        name: "BrainPOP",
+        category: "Literacy & Content",
+        objectives: ["Concept Introduction", "Animated Lessons", "Comprehension Checks"],
+        description: "Animated educational videos, games, and quizzes across core upper elementary & middle subjects.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.brainpop.com"
+      },
+      {
+        name: "BrainPOP Jr.",
+        category: "Literacy & Content",
+        objectives: ["K-3 Concepts", "Animated Lessons", "Early Literacy & Math"],
+        description: "Animated instructional content and gentle learning activities tailored specifically for grades K-3.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://jr.brainpop.com"
+      },
+      {
+        name: "Canva",
+        category: "Creativity & Media",
+        objectives: ["Presentations", "Visual Projects", "Student Portfolios"],
+        description: "Drag-and-drop graphic design suite with templates for slides, posters, and worksheets.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://canva.com"
+      },
+      {
+        name: "Canvas",
+        category: "LMS & Workflow",
+        objectives: ["Course Management", "Assignment Collection", "Discussion Boards"],
+        description: "Comprehensive Learning Management System for hosting courses, assignments, and grades.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.instructure.com/canvas"
+      },
+      {
+        name: "Curipod",
+        category: "Formative & Gamification",
+        objectives: ["Interactive Lessons", "AI Slide Generation", "Real-Time Polling"],
+        description: "AI-powered tool that builds interactive presentations with polls, drawings, and open questions.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://curipod.com"
+      },
+      {
+        name: "Defined Learning",
+        category: "Career Readiness & Life Skills",
+        objectives: ["Project-Based Learning", "Career Connections", "Performance Tasks"],
+        description: "PBL platform offering real-world performance tasks and career exploration modules.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.definedlearning.com"
+      },
+      {
+        name: "DnA (Illuminate)",
+        category: "Assessment & Data",
+        objectives: ["Custom Assessments", "Standards Tracking", "District Analytics"],
+        description: "Assessment creation and data management platform aligned to academic standards.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.illuminateed.com"
+      },
+      {
+        name: "Easy CBM",
+        category: "Assessment & Data",
+        objectives: ["Progress Monitoring", "RTI Tracking", "Fluency Benchmarks"],
+        description: "Curriculum-based measurement system for tracking student reading and math progress.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://easycbm.com"
+      },
+      {
+        name: "HMH Ed / Into Reading",
+        category: "Literacy & Content",
+        objectives: ["Core ELA", "Phonics Instruction", "Literacy Building"],
+        description: "Digital hub for HMH Into Reading core curriculum materials, decodables, and literacy assessments.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.hmhco.com/ui"
+      },
+      {
+        name: "Edmentum",
+        category: "Career Readiness & Life Skills",
+        objectives: ["Credit Recovery", "Courseware", "Individualized Learning"],
+        description: "Online learning programs for courseware, credit recovery, and test preparation.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.edmentum.com"
+      },
+      {
+        name: "EduClimber",
+        category: "Assessment & Data",
+        objectives: ["MTSS Data", "Behavior Tracking", "Whole-Child Analytics"],
+        description: "Data integration system aggregating academic, behavioral, and attendance data for MTSS support.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.educlimber.com"
+      },
+      {
+        name: "Elevate TN",
+        category: "Professional Growth",
+        objectives: ["State Alignment", "Curriculum Standards", "Teacher Resources"],
+        description: "State-aligned instructional resources and curriculum guidance for Tennessee educators.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.tn.gov/education"
+      },
+      {
+        name: "Epic (Free)",
+        category: "Literacy & Content",
+        objectives: ["Digital Library", "Independent Reading", "Read-to-Me Books"],
+        description: "Digital reading library with thousands of fiction and non-fiction e-books for kids.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.getepic.com"
+      },
+      {
+        name: "EVERFI",
+        category: "Career Readiness & Life Skills",
+        objectives: ["Financial Literacy", "Digital Citizenship", "Health & Character"],
+        description: "Interactive digital lessons covering financial literacy, STEM careers, and life skills.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://everfi.com"
+      },
+      {
+        name: "Flocabulary",
+        category: "Literacy & Content",
+        objectives: ["Educational Hip-Hop", "Vocabulary Building", "Cross-Curricular"],
+        description: "Educational hip-hop videos and learning activities for building academic vocabulary.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.flocabulary.com"
+      },
+      {
+        name: "Freckle",
+        category: "Math & STEM",
+        objectives: ["Differentiated Math", "ELA Practice", "Targeted Skill Building"],
+        description: "Adaptive practice platform providing targeted math and ELA practice tailored to student levels.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.freckle.com"
+      },
+      {
+        name: "Gallopade",
+        category: "Literacy & Content",
+        objectives: ["Social Studies", "Primary Sources", "State Standards"],
+        description: "Interactive social studies curriculum and state-aligned digital learning tools.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.gallopade.com"
+      },
+      {
+        name: "Generation Genius",
+        category: "Math & STEM",
+        objectives: ["Science Videos", "Math Lessons", "Hands-on Labs"],
+        description: "K-8 science and math video lessons produced in partnership with NSTA with lesson plans and quizzes.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.generationgenius.com"
+      },
+      {
+        name: "Google Classroom",
+        category: "LMS & Workflow",
+        objectives: ["Assignment Distribution", "Google Integration", "Workflow"],
+        description: "Streamlined assignment management and digital hub integrated seamlessly with Google Workspace.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://classroom.google.com"
+      },
+      {
+        name: "Google Workspace (Docs, Sheets, Slides, Gemini, NotebookLM)",
+        category: "AI & Generative Tools",
+        objectives: ["Cloud Collaboration", "Lesson Planning", "Document Analysis"],
+        description: "Core productivity suite combined with Gemini AI tools and NotebookLM for teacher workflows.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://workspace.google.com"
+      },
+      {
+        name: "Hapara",
+        category: "LMS & Workflow",
+        objectives: ["Screen Monitoring", "Workspace Distribution", "Browser Management"],
+        description: "Classroom management platform providing real-time screen visibility and digital workspace delivery.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://hapara.com"
+      },
+      {
+        name: "i-Ready Connect",
+        category: "Assessment & Data",
+        objectives: ["Diagnostic Testing", "Personalized Pathways", "Math & ELA Growth"],
+        description: "Adaptive assessment and personalized instruction program for K-12 math and reading growth.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://login.i-ready.com"
+      },
+      {
+        name: "IXL",
+        category: "Math & STEM",
+        objectives: ["Standards Practice", "Diagnostics", "Remediation"],
+        description: "Comprehensive K-12 practice platform covering math, ELA, science, and social studies standards.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.ixl.com"
+      },
+      {
+        name: "Kahoot! (Free)",
+        category: "Formative & Gamification",
+        objectives: ["Live Quiz Games", "Warm-ups", "Whole-Class Engagement"],
+        description: "Game-based learning platform for creating live trivia quizzes and interactive class polling.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://kahoot.com"
+      },
+      {
+        name: "Kira",
+        category: "AI & Generative Tools",
+        objectives: ["AI Tutoring", "Personalized Support", "Student Engagement"],
+        description: "AI-assisted learning platform supporting personalized student tutoring and real-time guidance.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.kira-learning.com"
+      },
+      {
+        name: "MagicSchool AI",
+        category: "AI & Generative Tools",
+        objectives: ["Lesson Planning", "IEP Accommodations", "Rubric Creation"],
+        description: "AI platform built specifically for educators to generate lesson plans, rubrics, and adapted content.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.magicschool.ai"
+      },
+      {
+        name: "MajorClarity",
+        category: "Career Readiness & Life Skills",
+        objectives: ["Career Exploration", "Academic Pathways", "Post-Secondary Prep"],
+        description: "Academic and career planning platform helping students explore post-secondary paths and micro-credentials.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://majorclarity.com"
+      },
+      {
+        name: "Mastery Connect",
+        category: "Assessment & Data",
+        objectives: ["Standards Mastery", "Formative Assessments", "Data Analytics"],
+        description: "Assessment and mastery tracking platform focused on standards-based grading and team data visualizer.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.masteryconnect.com"
+      },
+      {
+        name: "McGraw Hill",
+        category: "Literacy & Content",
+        objectives: ["Core Textbooks", "Digital Resources", "Curriculum Practice"],
+        description: "Central portal for accessing McGraw Hill textbook programs across core academic subjects.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://connected.mcgraw-hill.com"
+      },
+      {
+        name: "Microsoft OneDrive",
+        category: "Creativity & Media",
+        objectives: ["Cloud Storage", "File Backup", "Folder Organization"],
+        description: "Secure cloud storage service for backing up, organizing, and sharing administrative and teaching files.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://onedrive.live.com"
+      },
+      {
+        name: "Microsoft Teams",
+        category: "LMS & Workflow",
+        objectives: ["Virtual Meetings", "Chat & Channels", "Collaboration"],
+        description: "Communication and collaboration hub for video meetings, file sharing, and staff or class chats.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software"
+      },
+      {
+        name: "ParentSquare",
+        category: "Communication",
+        objectives: ["Parent Communication", "Newsletters", "Direct Messaging"],
+        description: "Unified school-to-home communication platform for district announcements, forms, and direct messaging.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.parentsquare.com"
+      },
+      {
+        name: "PASCO",
+        category: "Math & STEM",
+        objectives: ["STEM Experiments", "Sensor Data Logging", "Hands-on Labs"],
+        description: "Science probe sensors and lab software for collecting real-time data during hands-on science experiments.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.pasco.com"
+      },
+      {
+        name: "PowerSchool",
+        category: "Assessment & Data",
+        objectives: ["SIS & Gradebook", "Attendance", "Student Records"],
+        description: "Comprehensive Student Information System (SIS) for managing grades, attendance, and student data.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.powerschool.com"
+      },
+      {
+        name: "Reflex Math & Frax",
+        category: "Math & STEM",
+        objectives: ["Math Fact Fluency", "Fraction Mastery", "Remediation"],
+        description: "Adaptive, game-based systems for developing math fact fluency (Reflex) and fraction concepts (Frax).",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.reflexmath.com"
+      },
+      {
+        name: "Renaissance Accelerated Reader (AR)",
+        category: "Literacy & Content",
+        objectives: ["Independent Reading", "Comprehension Quizzes", "Goal Tracking"],
+        description: "Reading management program that tests comprehension on independent reading books and tracks goals.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.renaissance.com"
+      },
+      {
+        name: "Savvas EasyBridge",
+        category: "Literacy & Content",
+        objectives: ["Single Sign-On", "Core Curriculum", "Digital Textbooks"],
+        description: "Single sign-on platform providing access to Savvas core learning programs across subjects.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.savvaseasybridge.com"
+      },
+      {
+        name: "Skyward",
+        category: "Assessment & Data",
+        objectives: ["SIS & Gradebook", "Student Data", "Parent Portal"],
+        description: "Student information system for tracking student grades, attendance, messaging, and scheduling.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.skyward.com"
+      },
+      {
+        name: "Snorkl (Free)",
+        category: "AI & Generative Tools",
+        objectives: ["Student Reasoning", "AI Audio Feedback", "Formative Checks"],
+        description: "AI tool capturing student voice and visual thinking to provide instant feedback on student reasoning.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.snorkl.app"
+      },
+      {
+        name: "Studies Weekly",
+        category: "Literacy & Content",
+        objectives: ["Social Studies", "Periodical Reading", "Primary Sources"],
+        description: "Standards-aligned social studies and science periodical publications with embedded digital activities.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.studiesweekly.com"
+      },
+      {
+        name: "Study Island",
+        category: "Math & STEM",
+        objectives: ["Standards Mastery", "Test Prep", "Remediation"],
+        description: "Standards-based practice and state test preparation platform for K-12 math and ELA skills.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://www.edmentum.com/products/study-island/"
+      },
+      {
+        name: "Wayground",
+        category: "Math & STEM",
+        objectives: ["Interactive STEM", "Virtual Labs", "Problem Solving"],
+        description: "Interactive STEM learning platform focused on real-world simulations and problem-solving activities.",
+        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        url: "https://wayground.com"
+      }
+    ];
+
+    // Populate Dynamic Dropdown Options
+    function populateFilters() {
+      const categories = [...new Set(platforms.map(p => p.category))].sort();
+      const objectives = [...new Set(platforms.flatMap(p => p.objectives))].sort();
+
+      const catSelect = document.getElementById('categoryFilter');
+      categories.forEach(cat => {
+        catSelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+      });
+
+      const objSelect = document.getElementById('objectiveFilter');
+      objectives.forEach(obj => {
+        objSelect.innerHTML += `<option value="${obj}">${obj}</option>`;
+      });
+    }
+
+    // Render Cards
+    function renderCards(data) {
+      const grid = document.getElementById('cardsGrid');
+      const count = document.getElementById('resultsCount');
+      grid.innerHTML = '';
+      count.textContent = `Showing ${data.length} resource${data.length === 1 ? '' : 's'}`;
+
+      if (data.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No platforms match your criteria. Try adjusting your search.</div>`;
+        return;
+      }
+
+      data.forEach(p => {
+        const tagsHtml = p.objectives.map(obj => 
+          `<span class="text-xs bg-indigo-50 text-indigo-700 font-medium px-2 py-1 rounded-md">${obj}</span>`
+        ).join('');
+
+        grid.innerHTML += `
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition p-5 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <h2 class="text-lg font-bold text-slate-800">${p.name}</h2>
+                <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-semibold whitespace-nowrap">${p.category}</span>
+              </div>
+              <p class="text-slate-600 text-sm mb-4 leading-relaxed">${p.description}</p>
+              <div class="flex flex-wrap gap-1.5 mb-6">
+                ${tagsHtml}
+              </div>
+            </div>
+            <div class="flex items-center gap-2 pt-3 border-t border-slate-100">
+              <button onclick="openModal('${p.name}', '${p.videoUrl}')" 
+                      class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-sm py-2 px-3 rounded-lg transition text-center">
+                ▶ Video Overview
+              </button>
+              <a href="${p.url}" target="_blank" 
+                 class="bg-slate-800 hover:bg-slate-900 text-white font-semibold text-sm py-2 px-3 rounded-lg transition">
+                Open Site ↗
+              </a>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // Search and Filter Logic
+    function filterData() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const selectedCat = document.getElementById('categoryFilter').value;
+      const selectedObj = document.getElementById('objectiveFilter').value;
+
+      const filtered = platforms.filter(p => {
+        const matchesSearch = p.name.toLowerCase().includes(search) || 
+                              p.description.toLowerCase().includes(search) ||
+                              p.objectives.some(o => o.toLowerCase().includes(search));
+        const matchesCat = !selectedCat || p.category === selectedCat;
+        const matchesObj = !selectedObj || p.objectives.includes(selectedObj);
+
+        return matchesSearch && matchesCat && matchesObj;
+      });
+
+      renderCards(filtered);
+    }
+
+    // Modal Control
+    function openModal(title, videoUrl) {
+      document.getElementById('modalTitle').textContent = title + " - Overview";
+      document.getElementById('modalIframe').src = videoUrl;
+      document.getElementById('videoModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('videoModal').classList.add('hidden');
+      document.getElementById('modalIframe').src = '';
+    }
+
+    // Event Listeners
+    document.getElementById('searchInput').addEventListener('input', filterData);
+    document.getElementById('categoryFilter').addEventListener('change', filterData);
+    document.getElementById('objectiveFilter').addEventListener('change', filterData);
+
+    // Initial Setup
+    populateFilters();
+    renderCards(platforms);
+  </script>
+</body>
+</html>
