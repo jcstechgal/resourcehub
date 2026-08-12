@@ -343,7 +343,7 @@
         category: "AI & Generative Tools",
         objectives: ["Lesson Planning", "IEP Accommodations", "Rubric Creation"],
         description: "AI platform built specifically for educators to generate lesson plans, rubrics, and adapted content.",
-        videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        videoUrl: "https://www.magicschool.ai/magic-tools",
         url: "https://www.magicschool.ai"
       },
       {
@@ -572,6 +572,9 @@
             `<span class="text-[11px] bg-slate-100 text-slate-600 font-medium px-2 py-0.5 rounded">${obj}</span>`
           ).join('');
 
+          const isVideoEmbed = p.videoUrl.includes('youtube') || p.videoUrl.includes('vimeo') || p.videoUrl.includes('embed');
+          const btnLabel = isVideoEmbed ? '<span>▶</span> Overview' : '<span>📖</span> Tutorial';
+
           return `
             <div class="bg-white rounded-xl border border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition duration-200 p-5 flex flex-col justify-between">
               <div>
@@ -586,7 +589,7 @@
               <div class="flex items-center gap-2 pt-3 border-t border-slate-100 mt-auto">
                 <button onclick="openModal('${p.name}', '${p.videoUrl}')" 
                         class="flex-1 bg-red-50 hover:bg-red-100 text-red-900 font-semibold text-xs py-2 px-2.5 rounded-lg transition text-center flex items-center justify-center gap-1">
-                  <span>▶</span> Overview
+                  ${btnLabel}
                 </button>
                 <a href="${p.url}" target="_blank" 
                    class="bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs py-2 px-3 rounded-lg transition whitespace-nowrap">
@@ -639,9 +642,14 @@
 
     // Modal Controls
     function openModal(title, videoUrl) {
-      document.getElementById('modalTitle').textContent = title + " - Overview";
-      document.getElementById('modalIframe').src = videoUrl;
-      document.getElementById('videoModal').classList.remove('hidden');
+      if (!videoUrl) return;
+      if (videoUrl.includes('youtube') || videoUrl.includes('vimeo') || videoUrl.includes('embed')) {
+        document.getElementById('modalTitle').textContent = title + " - Overview";
+        document.getElementById('modalIframe').src = videoUrl;
+        document.getElementById('videoModal').classList.remove('hidden');
+      } else {
+        window.open(videoUrl, '_blank');
+      }
     }
 
     function closeModal() {
