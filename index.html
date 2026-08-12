@@ -3,62 +3,89 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EdTech Resource Directory</title>
+  <title>EdTech Resource Hub</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen">
+<body class="bg-slate-100 text-slate-800 min-h-screen pb-16">
 
-  <!-- Header -->
-  <header class="bg-indigo-700 text-white py-8 px-4 shadow-md">
-    <div class="max-w-6xl mx-auto text-center">
-      <h1 class="text-3xl md:text-4xl font-bold">EdTech Resource Directory</h1>
-      <p class="mt-2 text-indigo-100">Search by platform name, category, or teaching objective.</p>
+  <!-- Header Banner -->
+  <header class="bg-gradient-to-r from-indigo-800 via-indigo-700 to-purple-800 text-white py-10 px-4 shadow-lg">
+    <div class="max-w-7xl mx-auto text-center">
+      <span class="bg-indigo-500/30 text-indigo-200 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">District Staff Portal</span>
+      <h1 class="text-3xl md:text-5xl font-extrabold mt-3 tracking-tight">EdTech Resource Directory</h1>
+      <p class="mt-3 text-indigo-100 max-w-2xl mx-auto text-sm md:text-base font-normal">
+        Explore district-approved software, watch quick tutorial overviews, and search tools matched to your teaching objectives.
+      </p>
     </div>
   </header>
 
-  <!-- Search & Filter Controls -->
-  <main class="max-w-6xl mx-auto p-4 md:p-6">
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+  <!-- Control & Filter Panel -->
+  <main class="max-w-7xl mx-auto px-4 md:px-6 -mt-6">
+    <div class="bg-white rounded-2xl shadow-md border border-slate-200/80 p-5 md:p-6 mb-8">
       
-      <!-- Text Search Bar -->
-      <div>
-        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Search Keywords</label>
-        <input type="text" id="searchInput" placeholder="e.g., Kahoot, Math, Video, Reading..." 
-               class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      <!-- Top Search & Dropdown Controls -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+        <!-- Text Search -->
+        <div class="relative">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Search Tools & Objectives</label>
+          <div class="relative">
+            <input type="text" id="searchInput" placeholder="Search 'fractions', 'reading', 'Kahoot'..." 
+                   class="w-full border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Objective Filter -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Teaching Objective</label>
+          <select id="objectiveFilter" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition">
+            <option value="">All Objectives</option>
+          </select>
+        </div>
+
+        <!-- Category Dropdown -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Filter by Category</label>
+          <select id="categoryFilter" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition">
+            <option value="">All Categories</option>
+          </select>
+        </div>
       </div>
 
-      <!-- Category Dropdown -->
-      <div>
-        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Filter Category</label>
-        <select id="categoryFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-          <option value="">All Categories</option>
-        </select>
-      </div>
-
-      <!-- Objective Dropdown -->
-      <div>
-        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Teaching Objective</label>
-        <select id="objectiveFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-          <option value="">All Objectives</option>
-        </select>
+      <!-- Category Pill Quick-Nav Bar -->
+      <div class="pt-4 border-t border-slate-100 flex flex-wrap gap-2 items-center" id="pillContainer">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-2">Quick Jump:</span>
+        <!-- JS dynamically generates category pills here -->
       </div>
 
     </div>
 
     <!-- Active Results Counter -->
-    <div class="mb-4 text-sm text-slate-500 font-medium" id="resultsCount"></div>
+    <div class="flex items-center justify-between mb-6 px-1">
+      <div class="text-sm text-slate-600 font-semibold" id="resultsCount">Loading tools...</div>
+      <button id="resetFiltersBtn" onclick="resetFilters()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 hidden">
+        ✕ Clear Filters
+      </button>
+    </div>
 
-    <!-- Cards Grid -->
-    <div id="cardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    <!-- Grouped Container -->
+    <div id="groupedContent" class="space-y-12"></div>
   </main>
 
   <!-- Video Modal -->
-  <div id="videoModal" class="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50 hidden">
-    <div class="bg-white rounded-xl overflow-hidden max-w-3xl w-full shadow-2xl relative">
-      <div class="flex justify-between items-center p-4 border-b border-slate-200">
-        <h3 id="modalTitle" class="font-bold text-lg text-slate-800">Video Overview</h3>
-        <button onclick="closeModal()" class="text-slate-500 hover:text-slate-800 font-bold text-xl leading-none">&times;</button>
+  <div id="videoModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-2xl overflow-hidden max-w-4xl w-full shadow-2xl relative border border-slate-100">
+      <div class="flex justify-between items-center px-6 py-4 border-b border-slate-200 bg-slate-50">
+        <h3 id="modalTitle" class="font-bold text-slate-800 text-lg">Video Overview</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 font-bold text-2xl leading-none transition">&times;</button>
       </div>
       <div class="aspect-video w-full bg-black">
         <iframe id="modalIframe" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
@@ -151,7 +178,7 @@
       },
       {
         name: "Defined Learning",
-        category: "Career Readiness & Life Skills",
+        category: "Career & Life Skills",
         objectives: ["Project-Based Learning", "Career Connections", "Performance Tasks"],
         description: "PBL platform offering real-world performance tasks and career exploration modules.",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
@@ -183,7 +210,7 @@
       },
       {
         name: "Edmentum",
-        category: "Career Readiness & Life Skills",
+        category: "Career & Life Skills",
         objectives: ["Credit Recovery", "Courseware", "Individualized Learning"],
         description: "Online learning programs for courseware, credit recovery, and test preparation.",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
@@ -201,7 +228,7 @@
         name: "Elevate TN",
         category: "Professional Growth",
         objectives: ["State Alignment", "Curriculum Standards", "Teacher Resources"],
-        description: "State-aligned instructional resources and curriculum guidance for Tennessee educators.",
+        description: "State-aligned instructional resources and curriculum guidance for educators.",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
         url: "https://www.tn.gov/education"
       },
@@ -215,7 +242,7 @@
       },
       {
         name: "EVERFI",
-        category: "Career Readiness & Life Skills",
+        category: "Career & Life Skills",
         objectives: ["Financial Literacy", "Digital Citizenship", "Health & Character"],
         description: "Interactive digital lessons covering financial literacy, STEM careers, and life skills.",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
@@ -319,7 +346,7 @@
       },
       {
         name: "MajorClarity",
-        category: "Career Readiness & Life Skills",
+        category: "Career & Life Skills",
         objectives: ["Career Exploration", "Academic Pathways", "Post-Secondary Prep"],
         description: "Academic and career planning platform helping students explore post-secondary paths and micro-credentials.",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
@@ -329,7 +356,7 @@
         name: "Mastery Connect",
         category: "Assessment & Data",
         objectives: ["Standards Mastery", "Formative Assessments", "Data Analytics"],
-        description: "Assessment and mastery tracking platform focused on standards-based grading and team data visualizer.",
+        description: "Assessment and mastery tracking platform focused on standards-based grading and team data visualization.",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
         url: "https://www.masteryconnect.com"
       },
@@ -355,7 +382,7 @@
         objectives: ["Virtual Meetings", "Chat & Channels", "Collaboration"],
         description: "Communication and collaboration hub for video meetings, file sharing, and staff or class chats.",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        url: "https://www.microsoft.com/en-us/microsoft-teams/group-chat-software"
+        url: "https://www.microsoft.com"
       },
       {
         name: "ParentSquare",
@@ -435,7 +462,7 @@
         objectives: ["Standards Mastery", "Test Prep", "Remediation"],
         description: "Standards-based practice and state test preparation platform for K-12 math and ELA skills.",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-        url: "https://www.edmentum.com/products/study-island/"
+        url: "https://www.edmentum.com"
       },
       {
         name: "Wayground",
@@ -447,67 +474,149 @@
       }
     ];
 
-    // Populate Dynamic Dropdown Options
+    // Meta Category Config (Icons & Colors)
+    const categoryConfig = {
+      "AI & Generative Tools": { icon: "🤖", color: "from-purple-500 to-indigo-600", badgeBg: "bg-purple-100 text-purple-700" },
+      "Assessment & Data": { icon: "📊", color: "from-blue-500 to-cyan-600", badgeBg: "bg-blue-100 text-blue-700" },
+      "Formative & Gamification": { icon: "🎮", color: "from-amber-500 to-orange-600", badgeBg: "bg-amber-100 text-amber-700" },
+      "Literacy & Content": { icon: "📚", color: "from-emerald-500 to-teal-600", badgeBg: "bg-emerald-100 text-emerald-700" },
+      "Math & STEM": { icon: "🔬", color: "from-teal-500 to-cyan-700", badgeBg: "bg-teal-100 text-teal-700" },
+      "LMS & Workflow": { icon: "🏫", color: "from-indigo-500 to-blue-700", badgeBg: "bg-indigo-100 text-indigo-700" },
+      "Creativity & Media": { icon: "🎨", color: "from-rose-500 to-pink-600", badgeBg: "bg-rose-100 text-rose-700" },
+      "Career & Life Skills": { icon: "🚀", color: "from-sky-500 to-blue-600", badgeBg: "bg-sky-100 text-sky-700" },
+      "Communication": { icon: "💬", color: "from-violet-500 to-purple-600", badgeBg: "bg-violet-100 text-violet-700" },
+      "Professional Growth": { icon: "🌟", color: "from-yellow-500 to-amber-600", badgeBg: "bg-yellow-100 text-yellow-700" }
+    };
+
+    // Populate Filters and Pills
     function populateFilters() {
       const categories = [...new Set(platforms.map(p => p.category))].sort();
       const objectives = [...new Set(platforms.flatMap(p => p.objectives))].sort();
 
       const catSelect = document.getElementById('categoryFilter');
+      const objSelect = document.getElementById('objectiveFilter');
+      const pillContainer = document.getElementById('pillContainer');
+
       categories.forEach(cat => {
         catSelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+        const conf = categoryConfig[cat] || { icon: "📁" };
+        pillContainer.innerHTML += `
+          <button onclick="filterByCategoryPill('${cat}')" 
+                  class="text-xs bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-600 font-semibold px-3 py-1.5 rounded-lg border border-slate-200/80 transition flex items-center gap-1.5">
+            <span>${conf.icon}</span> ${cat}
+          </button>
+        `;
       });
 
-      const objSelect = document.getElementById('objectiveFilter');
       objectives.forEach(obj => {
         objSelect.innerHTML += `<option value="${obj}">${obj}</option>`;
       });
     }
 
-    // Render Cards
-    function renderCards(data) {
-      const grid = document.getElementById('cardsGrid');
+    function filterByCategoryPill(catName) {
+      document.getElementById('categoryFilter').value = catName;
+      filterData();
+    }
+
+    function resetFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('categoryFilter').value = '';
+      document.getElementById('objectiveFilter').value = '';
+      filterData();
+    }
+
+    // Render Grouped Sections
+    function renderGroupedCards(data) {
+      const container = document.getElementById('groupedContent');
       const count = document.getElementById('resultsCount');
-      grid.innerHTML = '';
+      const resetBtn = document.getElementById('resetFiltersBtn');
+      container.innerHTML = '';
+
+      const isFiltered = document.getElementById('searchInput').value || 
+                         document.getElementById('categoryFilter').value || 
+                         document.getElementById('objectiveFilter').value;
+
+      resetBtn.classList.toggle('hidden', !isFiltered);
       count.textContent = `Showing ${data.length} resource${data.length === 1 ? '' : 's'}`;
 
       if (data.length === 0) {
-        grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No platforms match your criteria. Try adjusting your search.</div>`;
+        container.innerHTML = `
+          <div class="text-center py-16 bg-white rounded-2xl border border-slate-200">
+            <span class="text-4xl">🔍</span>
+            <h3 class="text-lg font-bold text-slate-700 mt-3">No matching tools found</h3>
+            <p class="text-slate-500 text-sm mt-1">Try adjusting your keyword search or objective filters.</p>
+            <button onclick="resetFilters()" class="mt-4 bg-indigo-600 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+              Clear All Filters
+            </button>
+          </div>
+        `;
         return;
       }
 
-      data.forEach(p => {
-        const tagsHtml = p.objectives.map(obj => 
-          `<span class="text-xs bg-indigo-50 text-indigo-700 font-medium px-2 py-1 rounded-md">${obj}</span>`
-        ).join('');
+      // Group platforms by category
+      const grouped = data.reduce((acc, p) => {
+        acc[p.category] = acc[p.category] || [];
+        acc[p.category].push(p);
+        return acc;
+      }, {});
 
-        grid.innerHTML += `
-          <div class="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition p-5 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between gap-2 mb-2">
-                <h2 class="text-lg font-bold text-slate-800">${p.name}</h2>
-                <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-semibold whitespace-nowrap">${p.category}</span>
+      // Iterate through each category group
+      Object.keys(grouped).sort().forEach(cat => {
+        const items = grouped[cat];
+        const conf = categoryConfig[cat] || { icon: "📁", color: "from-slate-600 to-slate-800", badgeBg: "bg-slate-100 text-slate-700" };
+
+        let cardsHtml = items.map(p => {
+          const tagsHtml = p.objectives.map(obj => 
+            `<span class="text-[11px] bg-slate-100 text-slate-600 font-medium px-2 py-0.5 rounded">${obj}</span>`
+          ).join('');
+
+          return `
+            <div class="bg-white rounded-xl border border-slate-200/90 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition duration-200 p-5 flex flex-col justify-between">
+              <div>
+                <div class="flex items-start justify-between gap-2 mb-2">
+                  <h3 class="text-base font-bold text-slate-800 leading-snug">${p.name}</h3>
+                </div>
+                <p class="text-slate-600 text-xs mb-4 leading-relaxed">${p.description}</p>
+                <div class="flex flex-wrap gap-1 mb-5">
+                  ${tagsHtml}
+                </div>
               </div>
-              <p class="text-slate-600 text-sm mb-4 leading-relaxed">${p.description}</p>
-              <div class="flex flex-wrap gap-1.5 mb-6">
-                ${tagsHtml}
+              <div class="flex items-center gap-2 pt-3 border-t border-slate-100 mt-auto">
+                <button onclick="openModal('${p.name}', '${p.videoUrl}')" 
+                        class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs py-2 px-2.5 rounded-lg transition text-center flex items-center justify-center gap-1">
+                  <span>▶</span> Overview
+                </button>
+                <a href="${p.url}" target="_blank" 
+                   class="bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs py-2 px-3 rounded-lg transition whitespace-nowrap">
+                  Open Site ↗
+                </a>
               </div>
             </div>
-            <div class="flex items-center gap-2 pt-3 border-t border-slate-100">
-              <button onclick="openModal('${p.name}', '${p.videoUrl}')" 
-                      class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-sm py-2 px-3 rounded-lg transition text-center">
-                ▶ Video Overview
-              </button>
-              <a href="${p.url}" target="_blank" 
-                 class="bg-slate-800 hover:bg-slate-900 text-white font-semibold text-sm py-2 px-3 rounded-lg transition">
-                Open Site ↗
-              </a>
+          `;
+        }).join('');
+
+        container.innerHTML += `
+          <section id="${cat.replace(/\s+/g, '-').toLowerCase()}" class="scroll-mt-6">
+            <!-- Category Header -->
+            <div class="flex items-center gap-3 mb-4 border-b border-slate-200/80 pb-3">
+              <div class="w-9 h-9 rounded-xl bg-gradient-to-br ${conf.color} text-white flex items-center justify-center text-lg shadow-sm font-bold">
+                ${conf.icon}
+              </div>
+              <div>
+                <h2 class="text-xl font-bold text-slate-800">${cat}</h2>
+                <span class="text-xs font-medium text-slate-400">${items.length} platform${items.length === 1 ? '' : 's'} available</span>
+              </div>
             </div>
-          </div>
+            <!-- Category Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              ${cardsHtml}
+            </div>
+          </section>
         `;
       });
     }
 
-    // Search and Filter Logic
+    // Filter Logic
     function filterData() {
       const search = document.getElementById('searchInput').value.toLowerCase();
       const selectedCat = document.getElementById('categoryFilter').value;
@@ -523,10 +632,10 @@
         return matchesSearch && matchesCat && matchesObj;
       });
 
-      renderCards(filtered);
+      renderGroupedCards(filtered);
     }
 
-    // Modal Control
+    // Modal Controls
     function openModal(title, videoUrl) {
       document.getElementById('modalTitle').textContent = title + " - Overview";
       document.getElementById('modalIframe').src = videoUrl;
@@ -545,7 +654,7 @@
 
     // Initial Setup
     populateFilters();
-    renderCards(platforms);
+    renderGroupedCards(platforms);
   </script>
 </body>
 </html>
