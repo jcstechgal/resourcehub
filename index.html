@@ -7,19 +7,21 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts: Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen pb-16">
 
-  <!-- Header Banner -->
-  <header class="bg-gradient-to-r from-indigo-800 via-indigo-700 to-purple-800 text-white py-10 px-4 shadow-lg">
+  <!-- Header Banner (Johnson City Schools Maroon & Gold Theme) -->
+  <header class="bg-gradient-to-r from-red-950 via-red-900 to-neutral-900 text-white py-10 px-4 shadow-xl border-b-4 border-amber-500">
     <div class="max-w-7xl mx-auto text-center">
-      <span class="bg-indigo-500/30 text-indigo-200 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">District Staff Portal</span>
-      <h1 class="text-3xl md:text-5xl font-extrabold mt-3 tracking-tight">EdTech Resource Directory</h1>
-      <p class="mt-3 text-indigo-100 max-w-2xl mx-auto text-sm md:text-base font-normal">
+      <span class="bg-amber-500/20 text-amber-300 border border-amber-400/30 text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider">
+        Johnson City Schools • District Staff Portal
+      </span>
+      <h1 class="text-3xl md:text-5xl font-extrabold mt-3 tracking-tight text-white">EdTech Resource Directory</h1>
+      <p class="mt-3 text-red-100 max-w-2xl mx-auto text-sm md:text-base font-normal">
         Explore district-approved software, watch quick tutorial overviews, and search tools matched to your teaching objectives.
       </p>
     </div>
@@ -36,7 +38,7 @@
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Search Tools & Objectives</label>
           <div class="relative">
             <input type="text" id="searchInput" placeholder="Search 'fractions', 'reading', 'Kahoot'..." 
-                   class="w-full border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition">
+                   class="w-full border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-transparent transition">
             <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
@@ -46,7 +48,7 @@
         <!-- Objective Filter -->
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Teaching Objective</label>
-          <select id="objectiveFilter" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition">
+          <select id="objectiveFilter" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-transparent transition">
             <option value="">All Objectives</option>
           </select>
         </div>
@@ -54,7 +56,7 @@
         <!-- Category Dropdown -->
         <div>
           <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Filter by Category</label>
-          <select id="categoryFilter" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition">
+          <select id="categoryFilter" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-800 focus:border-transparent transition">
             <option value="">All Categories</option>
           </select>
         </div>
@@ -71,7 +73,7 @@
     <!-- Active Results Counter -->
     <div class="flex items-center justify-between mb-6 px-1">
       <div class="text-sm text-slate-600 font-semibold" id="resultsCount">Loading tools...</div>
-      <button id="resetFiltersBtn" onclick="resetFilters()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 hidden">
+      <button id="resetFiltersBtn" onclick="resetFilters()" class="text-xs font-semibold text-red-800 hover:text-red-950 hidden">
         ✕ Clear Filters
       </button>
     </div>
@@ -370,7 +372,7 @@
       },
       {
         name: "Microsoft OneDrive",
-        category: "Creativity & Media",
+        category: "LMS & Workflow",
         objectives: ["Cloud Storage", "File Backup", "Folder Organization"],
         description: "Secure cloud storage service for backing up, organizing, and sharing administrative and teaching files.",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
@@ -476,16 +478,16 @@
 
     // Meta Category Config (Icons & Colors)
     const categoryConfig = {
-      "AI & Generative Tools": { icon: "🤖", color: "from-purple-500 to-indigo-600", badgeBg: "bg-purple-100 text-purple-700" },
-      "Assessment & Data": { icon: "📊", color: "from-blue-500 to-cyan-600", badgeBg: "bg-blue-100 text-blue-700" },
-      "Formative & Gamification": { icon: "🎮", color: "from-amber-500 to-orange-600", badgeBg: "bg-amber-100 text-amber-700" },
-      "Literacy & Content": { icon: "📚", color: "from-emerald-500 to-teal-600", badgeBg: "bg-emerald-100 text-emerald-700" },
-      "Math & STEM": { icon: "🔬", color: "from-teal-500 to-cyan-700", badgeBg: "bg-teal-100 text-teal-700" },
-      "LMS & Workflow": { icon: "🏫", color: "from-indigo-500 to-blue-700", badgeBg: "bg-indigo-100 text-indigo-700" },
-      "Creativity & Media": { icon: "🎨", color: "from-rose-500 to-pink-600", badgeBg: "bg-rose-100 text-rose-700" },
-      "Career & Life Skills": { icon: "🚀", color: "from-sky-500 to-blue-600", badgeBg: "bg-sky-100 text-sky-700" },
-      "Communication": { icon: "💬", color: "from-violet-500 to-purple-600", badgeBg: "bg-violet-100 text-violet-700" },
-      "Professional Growth": { icon: "🌟", color: "from-yellow-500 to-amber-600", badgeBg: "bg-yellow-100 text-yellow-700" }
+      "AI & Generative Tools": { icon: "🤖", color: "from-purple-600 to-indigo-700", badgeBg: "bg-purple-100 text-purple-800" },
+      "Assessment & Data": { icon: "📊", color: "from-blue-600 to-cyan-700", badgeBg: "bg-blue-100 text-blue-800" },
+      "Formative & Gamification": { icon: "🎮", color: "from-amber-500 to-orange-600", badgeBg: "bg-amber-100 text-amber-800" },
+      "Literacy & Content": { icon: "📚", color: "from-emerald-600 to-teal-700", badgeBg: "bg-emerald-100 text-emerald-800" },
+      "Math & STEM": { icon: "🔬", color: "from-teal-600 to-cyan-800", badgeBg: "bg-teal-100 text-teal-800" },
+      "LMS & Workflow": { icon: "🏫", color: "from-red-900 to-red-950", badgeBg: "bg-red-100 text-red-900" },
+      "Creativity & Media": { icon: "🎨", color: "from-rose-600 to-pink-700", badgeBg: "bg-rose-100 text-rose-800" },
+      "Career & Life Skills": { icon: "🚀", color: "from-sky-600 to-blue-700", badgeBg: "bg-sky-100 text-sky-800" },
+      "Communication": { icon: "💬", color: "from-violet-600 to-purple-700", badgeBg: "bg-violet-100 text-violet-800" },
+      "Professional Growth": { icon: "🌟", color: "from-amber-600 to-yellow-700", badgeBg: "bg-yellow-100 text-yellow-800" }
     };
 
     // Populate Filters and Pills
@@ -502,7 +504,7 @@
         const conf = categoryConfig[cat] || { icon: "📁" };
         pillContainer.innerHTML += `
           <button onclick="filterByCategoryPill('${cat}')" 
-                  class="text-xs bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-600 font-semibold px-3 py-1.5 rounded-lg border border-slate-200/80 transition flex items-center gap-1.5">
+                  class="text-xs bg-slate-100 hover:bg-red-50 hover:text-red-900 text-slate-600 font-semibold px-3 py-1.5 rounded-lg border border-slate-200/80 transition flex items-center gap-1.5">
             <span>${conf.icon}</span> ${cat}
           </button>
         `;
@@ -545,7 +547,7 @@
             <span class="text-4xl">🔍</span>
             <h3 class="text-lg font-bold text-slate-700 mt-3">No matching tools found</h3>
             <p class="text-slate-500 text-sm mt-1">Try adjusting your keyword search or objective filters.</p>
-            <button onclick="resetFilters()" class="mt-4 bg-indigo-600 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+            <button onclick="resetFilters()" class="mt-4 bg-red-900 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-red-950 transition">
               Clear All Filters
             </button>
           </div>
@@ -583,7 +585,7 @@
               </div>
               <div class="flex items-center gap-2 pt-3 border-t border-slate-100 mt-auto">
                 <button onclick="openModal('${p.name}', '${p.videoUrl}')" 
-                        class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs py-2 px-2.5 rounded-lg transition text-center flex items-center justify-center gap-1">
+                        class="flex-1 bg-red-50 hover:bg-red-100 text-red-900 font-semibold text-xs py-2 px-2.5 rounded-lg transition text-center flex items-center justify-center gap-1">
                   <span>▶</span> Overview
                 </button>
                 <a href="${p.url}" target="_blank" 
